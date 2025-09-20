@@ -1,29 +1,10 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
-import { Analytics } from "@vercel/analytics/next"
-import { Suspense } from "react"
-import "./globals.css"
+// app/admin/layout.tsx
+import type { ReactNode } from "react"
 
-export const metadata: Metadata = {
-  title: "BRUSS Cup 2025 - Counter-Strike: Source Tournament",
-  description:
-    "Official website for BRUSS Cup 2025 Counter-Strike: Source Tournament. Register now for the ultimate CS:S competition!",
-  generator: "v0.app",
-}
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>
-        <Suspense fallback={null}>{children}</Suspense>
-        <Analytics />
-      </body>
-    </html>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      {children}
+    </div>
   )
 }
