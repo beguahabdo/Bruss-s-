@@ -33,25 +33,33 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Check if user is trying to access admin routes
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!user) {
-      // Redirect to admin login if not authenticated
-      const url = request.nextUrl.clone()
-      url.pathname = "/admin/login"
-      return NextResponse.redirect(url)
-    }
-
-    // Check if user is an admin
-    const { data: adminUser } = await supabase.from("admin_users").select("*").eq("id", user.id).single()
-
-    if (!adminUser) {
-      // Redirect to unauthorized page if not an admin
-      const url = request.nextUrl.clone()
-      url.pathname = "/admin/unauthorized"
-      return NextResponse.redirect(url)
-    }
+ // Check if user is trying to access admin routes
+if (
+  request.nextUrl.pathname.startsWith("/admin") &&
+  request.nextUrl.pathname !== "/admin/login" &&
+  request.nextUrl.pathname !== "/admin/unauthorized"
+) {
+  if (!user) {
+    // Redirect to admin login if not authenticated
+    const url = request.nextUrl.clone()
+    url.pathname = "/admin/login"
+    return NextResponse.redirect(url)
   }
+
+  // Check if user is an admin
+  const { data: adminUser } = await supabase
+    .from("admin_users")
+    .select("*")
+    .eq("id", user.id)
+    .single()
+
+  if (!adminUser) {
+    // Redirect to unauthorized page if not an admin
+    const url = request.nextUrl.clone()
+    url.pathname = "/admin/unauthorized"
+    return NextResponse.redirect(url)
+  }
+}
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   return supabaseResponse
